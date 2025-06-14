@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Upload resume to Naukri
-        uses: Prateek-Wayne/naukri-resume-action@v1
+        uses: Prateek-Wayne/naukri-resume-action@v1.0.1
         with:
           username: ${{ secrets.NAUKRI_USERNAME }}
           password: ${{ secrets.NAUKRI_PASSWORD }}
@@ -66,8 +66,6 @@ how to find it:
 📹 **Video Guide**:
 
 https://github.com/user-attachments/assets/44f2744e-672d-48b6-b8b7-1de1dfb7217c
-
-
 
 ## Security 🔒
 

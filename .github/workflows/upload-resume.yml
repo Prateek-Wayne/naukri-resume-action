@@ -1,9 +1,6 @@
 name: Upload Naukri Resume
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # Run every day at midnight
-  # Add this to make it easier to trigger manually
   workflow_dispatch:
 
 jobs:
