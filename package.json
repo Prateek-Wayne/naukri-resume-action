@@ -43,7 +43,7 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "axios": "^1.9.0",
-    "form-data": "^4.0.3"
+    "form-data": "^4.0.4"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.9",
