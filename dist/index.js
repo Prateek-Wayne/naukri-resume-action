@@ -47692,7 +47692,7 @@ async function run() {
         const password = coreExports.getInput('password');
         const profileId = coreExports.getInput('profile_id');
         const resumePathInput = coreExports.getInput('resume_path');
-        const profileSummary = coreExports.getInput('profile_summary');
+        let profileSummary = coreExports.getInput('profile_summary');
         // Mask sensitive inputs
         coreExports.setSecret(username);
         coreExports.setSecret(password);
@@ -47750,6 +47750,8 @@ async function run() {
             }
             else {
                 coreExports.info('🔄 Updating profile summary...');
+                // add a unique time stamp at the end of profile summary
+                profileSummary += ` ${new Date().getTime()}`;
                 try {
                     const ok = await updateProfileSummary(cookies, profileId, profileSummary);
                     if (ok)
