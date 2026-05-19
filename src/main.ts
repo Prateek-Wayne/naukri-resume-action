@@ -16,7 +16,7 @@ export async function run(): Promise<void> {
     const password = core.getInput('password');
     const profileId = core.getInput('profile_id');
     const resumePathInput = core.getInput('resume_path');
-    const profileSummary = core.getInput('profile_summary');
+    let profileSummary = core.getInput('profile_summary');
 
     // Mask sensitive inputs
     core.setSecret(username);
@@ -90,6 +90,8 @@ export async function run(): Promise<void> {
         );
       } else {
         core.info('🔄 Updating profile summary...');
+        // add a unique time stamp at the end of profile summary
+        profileSummary += ` ${new Date().getTime()}`;
         try {
           const ok = await updateProfileSummary(
             cookies,
