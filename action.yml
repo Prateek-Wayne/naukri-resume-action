@@ -21,6 +21,11 @@ inputs:
   profile_id:
     description: 'profileId of the naukri.com account'
     required: true
+  profile_summary:
+    description:
+      'Profile summary to update (optional - keeps profile active, minimum 50
+      characters)'
+    required: false
 
 # Define your outputs here.
 outputs:

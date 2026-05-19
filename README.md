@@ -44,6 +44,8 @@ jobs:
             ./resumes/resume1.pdf
             ./resumes/resume2.pdf
             ./resumes/resume3.pdf
+          profile_summary: 'Your updated profile summary here this should be
+            more than 50 chars' # Optional
 ```
 
 See a full example:
@@ -51,12 +53,13 @@ See a full example:
 
 ## Inputs 📝
 
-| Input         | Description                             | Required |
-| ------------- | --------------------------------------- | -------- |
-| `username`    | Naukri.com login email                  | Yes      |
-| `password`    | Naukri.com password                     | Yes      |
-| `profile_id`  | Naukri profile ID                       | Yes      |
-| `resume_path` | Path(s) to resume file(s), one per line | Yes      |
+| Input             | Description                                                        | Required |
+| ----------------- | ------------------------------------------------------------------ | -------- |
+| `username`        | Naukri.com login email                                             | Yes      |
+| `password`        | Naukri.com password                                                | Yes      |
+| `profile_id`      | Naukri profile ID                                                  | Yes      |
+| `resume_path`     | Path(s) to resume file(s), one per line                            | Yes      |
+| `profile_summary` | Profile summary text (keeps profile active, minimum 50 characters) | No       |
 
 ## Finding Your Profile ID 🔍
 

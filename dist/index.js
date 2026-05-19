@@ -47433,6 +47433,10 @@ const resumeUploadUrl = 'https://filevalidation.naukri.com/file';
 const resumeUpdateUrl = (profileId) => {
     return `https://www.naukri.com/cloudgateway-mynaukri/resman-aggregator-services/v0/users/self/profiles/${profileId}/advResume`;
 };
+// Profile complete URL used to update profile summary and fetch profile data
+const profileCompleteUrl = 'https://www.naukri.com/cloudgateway-ncjobseeker/fn-jobseeker-profile-services/v0/users/self/profile-complete?flowId=mobile-mnj';
+// Alias for backward compatibility
+const profileFetchUrl = profileCompleteUrl;
 
 const extractCookieObject = (cookies = []) => {
     let unid = '';
@@ -47556,6 +47560,127 @@ const uploadResume = async (cookieHeader, resumePath, resumeId) => {
 };
 
 /**
+ * Update the jobseeker profile summary.
+ * - If the remote API requires additional profile fields, pass a full payload
+ *   using the `fullPayload` parameter. If omitted, a minimal payload containing
+ *   `profileId` and `summary` will be sent.
+ */
+const updateProfileSummary = async (cookieHeader, profileId, summary, fullPayload) => {
+    try {
+        let data = fullPayload;
+        // If no full payload provided, fetch current profile and merge summary
+        if (!fullPayload) {
+            // eslint-disable-next-line no-console
+            console.log('📥 Fetching current profile data...');
+            try {
+                // Headers for GET request (without x-http-method-override)
+                const getHeaders = {
+                    ...uploadFileHeader(cookieHeader),
+                    'content-type': 'application/json',
+                    'x-requested-with': 'XMLHttpRequest',
+                    appid: '801',
+                    systemid: '90',
+                    authorization: `Bearer ${cookieHeader.nauk_at}`
+                };
+                const profileResp = await axios.get(profileFetchUrl, {
+                    headers: getHeaders
+                });
+                if (profileResp.status === 200 && profileResp.data) {
+                    // eslint-disable-next-line no-console
+                    console.log('✓ Profile data fetched successfully');
+                    // Extract only resumeMakerPersonalDetails to avoid formKey/fileKey errors from other sections
+                    const personalDetails = profileResp.data.jobseekerData?.resumeMakerPersonalDetails;
+                    if (personalDetails) {
+                        // Remove uploadPhoto as it may contain null formKey/fileKey
+                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        const { uploadPhoto, ...cleanPersonalDetails } = personalDetails;
+                        // Send only the personal details section with updated summary
+                        data = {
+                            jobseekerData: {
+                                resumeMakerPersonalDetails: {
+                                    ...cleanPersonalDetails,
+                                    summary,
+                                    profileId
+                                }
+                            }
+                        };
+                        // eslint-disable-next-line no-console
+                        console.log('✓ Using resumeMakerPersonalDetails (removed uploadPhoto)');
+                    }
+                    else {
+                        // eslint-disable-next-line no-console
+                        console.warn('⚠️ Personal details not found, using minimal payload');
+                        data = {
+                            jobseekerData: {
+                                resumeMakerPersonalDetails: {
+                                    summary,
+                                    profileId
+                                }
+                            }
+                        };
+                    }
+                }
+                else {
+                    // eslint-disable-next-line no-console
+                    console.warn('⚠️ Could not fetch profile, using minimal payload');
+                    data = {
+                        jobseekerData: {
+                            resumeMakerPersonalDetails: {
+                                summary,
+                                profileId
+                            }
+                        }
+                    };
+                }
+            }
+            catch (fetchErr) {
+                // eslint-disable-next-line no-console
+                console.warn('⚠️ Profile fetch failed, using minimal payload:', fetchErr);
+                data = {
+                    jobseekerData: {
+                        resumeMakerPersonalDetails: {
+                            summary,
+                            profileId
+                        }
+                    }
+                };
+            }
+        }
+        // Headers for POST request (same pattern as uploadResume.ts)
+        const updateHeaders = {
+            ...uploadFileHeader(cookieHeader),
+            'content-type': 'application/json',
+            'x-http-method-override': 'PUT',
+            'x-requested-with': 'XMLHttpRequest',
+            appid: '801',
+            systemid: '90',
+            authorization: `Bearer ${cookieHeader.nauk_at}`
+        };
+        const url = profileCompleteUrl;
+        // eslint-disable-next-line no-console
+        console.log('Updating profile...');
+        const resp = await axios.post(url, data, { headers: updateHeaders });
+        if (resp.status !== 200) {
+            console.error('Profile update failed:', resp.status, resp.data);
+            return false;
+        }
+        console.log('Profile updated successfully!');
+        return true;
+    }
+    catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const axiosError = error;
+        if (axiosError.response) {
+            console.error('Error in updateProfileSummary:', axiosError.response.status, axiosError.response.data);
+        }
+        else {
+            console.error('Error in updateProfileSummary:', error);
+        }
+        return false;
+    }
+};
+
+/**
  * The main function for the action.
  *
  * @returns Resolves when the action is complete.
@@ -47567,6 +47692,7 @@ async function run() {
         const password = coreExports.getInput('password');
         const profileId = coreExports.getInput('profile_id');
         const resumePathInput = coreExports.getInput('resume_path');
+        const profileSummary = coreExports.getInput('profile_summary');
         // Mask sensitive inputs
         coreExports.setSecret(username);
         coreExports.setSecret(password);
@@ -47615,6 +47741,26 @@ async function run() {
         const cookies = await login(username, password);
         if (!cookies) {
             throw new Error('❌ Login failed');
+        }
+        // Optionally update profile summary if provided
+        if (profileSummary) {
+            // Validate profile summary length (minimum 50 characters)
+            if (profileSummary.trim().length < 50) {
+                coreExports.warning(`⚠️ Profile summary is too short (${profileSummary.trim().length} chars). Minimum 50 characters required. Skipping profile update.`);
+            }
+            else {
+                coreExports.info('🔄 Updating profile summary...');
+                try {
+                    const ok = await updateProfileSummary(cookies, profileId, profileSummary);
+                    if (ok)
+                        coreExports.info('✅ Profile summary updated');
+                    else
+                        coreExports.warning('⚠️ Profile summary update failed (API returned non-2xx)');
+                }
+                catch (err) {
+                    coreExports.warning(`⚠️ Profile summary update error: ${err.message}`);
+                }
+            }
         }
         // Upload the resume
         coreExports.info('⬆️ Uploading resume...');

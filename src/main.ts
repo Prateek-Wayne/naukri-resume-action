@@ -83,22 +83,29 @@ export async function run(): Promise<void> {
 
     // Optionally update profile summary if provided
     if (profileSummary) {
-      core.info('🔄 Updating profile summary...');
-      try {
-        const ok = await updateProfileSummary(
-          cookies,
-          profileId,
-          profileSummary
-        );
-        if (ok) core.info('✅ Profile summary updated');
-        else
-          core.warning(
-            '⚠️ Profile summary update failed (API returned non-2xx)'
-          );
-      } catch (err) {
+      // Validate profile summary length (minimum 50 characters)
+      if (profileSummary.trim().length < 50) {
         core.warning(
-          `⚠️ Profile summary update error: ${(err as Error).message}`
+          `⚠️ Profile summary is too short (${profileSummary.trim().length} chars). Minimum 50 characters required. Skipping profile update.`
         );
+      } else {
+        core.info('🔄 Updating profile summary...');
+        try {
+          const ok = await updateProfileSummary(
+            cookies,
+            profileId,
+            profileSummary
+          );
+          if (ok) core.info('✅ Profile summary updated');
+          else
+            core.warning(
+              '⚠️ Profile summary update failed (API returned non-2xx)'
+            );
+        } catch (err) {
+          core.warning(
+            `⚠️ Profile summary update error: ${(err as Error).message}`
+          );
+        }
       }
     }
 
