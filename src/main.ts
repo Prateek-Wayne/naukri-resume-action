@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import * as fs from 'fs';
 import { login } from './api/login';
 import { uploadResume } from './api/uploadResume';
+import { updateProfileSummary } from './api/updateProfile';
 
 /**
  * The main function for the action.
@@ -15,6 +16,7 @@ export async function run(): Promise<void> {
     const password = core.getInput('password');
     const profileId = core.getInput('profile_id');
     const resumePathInput = core.getInput('resume_path');
+    const profileSummary = core.getInput('profile_summary');
 
     // Mask sensitive inputs
     core.setSecret(username);
@@ -77,6 +79,27 @@ export async function run(): Promise<void> {
 
     if (!cookies) {
       throw new Error('❌ Login failed');
+    }
+
+    // Optionally update profile summary if provided
+    if (profileSummary) {
+      core.info('🔄 Updating profile summary...');
+      try {
+        const ok = await updateProfileSummary(
+          cookies,
+          profileId,
+          profileSummary
+        );
+        if (ok) core.info('✅ Profile summary updated');
+        else
+          core.warning(
+            '⚠️ Profile summary update failed (API returned non-2xx)'
+          );
+      } catch (err) {
+        core.warning(
+          `⚠️ Profile summary update error: ${(err as Error).message}`
+        );
+      }
     }
 
     // Upload the resume
