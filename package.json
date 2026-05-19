@@ -24,7 +24,7 @@
     ".": "./dist/index.js"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "scripts": {
     "bundle": "npm run format:write && npm run package",
@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.9",
-    "@github/local-action": "^3.2.1",
+    "@github/local-action": "^7.0.1",
     "@jest/globals": "^29.7.0",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-json": "^6.1.0",
