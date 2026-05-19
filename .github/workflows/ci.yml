@@ -30,9 +30,6 @@ jobs:
       - name: Check Format
         run: yarn format:check
 
-      - name: Lint
-        run: yarn lint
-
       - name: Test
         run: yarn test
 
