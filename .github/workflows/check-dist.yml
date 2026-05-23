@@ -58,9 +58,11 @@ jobs:
             ls -la ./
             exit 1
           fi
-          if [ "$(git diff --ignore-space-at-eol --text dist/ | wc -l)" -gt "0" ]; then
+          # Ignore source map files when checking diffs to avoid spurious
+          # failures caused by non-deterministic sourcemap generation.
+          if [ "$(git diff --ignore-space-at-eol --text -- dist/ ':(exclude)dist/*.map' | wc -l)" -gt "0" ]; then
             echo "Detected uncommitted changes after build. See status below:"
-            git diff --ignore-space-at-eol --text dist/
+            git diff --ignore-space-at-eol --text -- dist/ ':(exclude)dist/*.map'
             exit 1
           fi
 
