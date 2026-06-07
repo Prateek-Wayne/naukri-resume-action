@@ -1,20 +1,22 @@
-name: Upload Naukri Resume
+name: Update Naukri Profile
 
 on:
   workflow_dispatch:
 
 jobs:
-  upload-resume:
+  update-profile:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Upload resume to Naukri
-        uses: Prateek-Wayne/naukri-resume-action@v1
+      - name: Update Naukri profile
+        uses: Prateek-Wayne/naukri-resume-action@main
         with:
           username: ${{ secrets.NAUKRI_USERNAME }}
           password: ${{ secrets.NAUKRI_PASSWORD }}
           profile_id: ${{ secrets.NAUKRI_PROFILE_ID }}
           resume_path: |-
             ./resumes/resume1.pdf
+          profile_summary: 'Your profile summary here ' # Optional: min 50 chars
+          resume_headline: 'Your resume headline here ' # Optional: max 250 chars

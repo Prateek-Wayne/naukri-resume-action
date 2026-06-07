@@ -1,10 +1,12 @@
-name: Naukri Resume Action
-description: Automate the process of uploading resumes to naukri.com
+name: Naukri Profile Updater
+description:
+  Keep your Naukri profile active by uploading resumes, updating profile
+  summary, and resume headline
 author: Prateek Wayne
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: upload-cloud
+  icon: refresh-cw
   color: blue
 
 # Define your inputs here.

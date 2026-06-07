@@ -1,6 +1,6 @@
 {
-  "name": "naukri-resume-action",
-  "description": "GitHub Action to automate uploading resumes to naukri.com",
+  "name": "naukri-profile-updater",
+  "description": "GitHub Action to keep your Naukri profile active by uploading resumes, updating profile summary, and resume headline",
   "version": "1.0.0",
   "author": "Prateek Wayne",
   "type": "module",
@@ -17,6 +17,9 @@
     "actions",
     "naukri",
     "resume",
+    "profile",
+    "headline",
+    "summary",
     "job",
     "automation"
   ],

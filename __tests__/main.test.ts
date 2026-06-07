@@ -1,10 +1,10 @@
 /**
- * Unit tests for the Naukri Resume Action
+ * Unit tests for the Naukri Profile Updater
  *
- * These tests validate the profile summary feature and core functionality.
+ * These tests validate the profile summary, resume headline, and core functionality.
  */
 
-describe('Naukri Resume Action - Profile Summary Validation', () => {
+describe('Naukri Profile Updater - Profile Summary Validation', () => {
   describe('Summary length validation', () => {
     it('should require minimum 50 characters', () => {
       const shortSummary = 'Too short';

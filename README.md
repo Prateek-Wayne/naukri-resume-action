@@ -1,11 +1,15 @@
-# Naukri Resume Action 📄
+# Naukri Profile Updater 📄
 
-A GitHub Action to automatically upload your resume to Naukri.com, keeping your
-profile fresh and active—no manual intervention needed! 🚀
+A GitHub Action to automatically keep your Naukri.com profile fresh—upload
+resumes, update your profile summary, and set your resume headline, all without
+manual intervention! 🚀
 
 ## Features ✨
 
-- 🔄 **Scheduled uploads:** Keep your profile active automatically
+- 🔄 **Scheduled updates:** Keep your profile active automatically
+- 📤 **Resume upload:** Upload one or multiple resume files
+- 📝 **Profile summary update:** Keep your summary current (min 50 characters)
+- 🏷️ **Resume headline update:** Set a compelling headline (max 250 characters)
 - 🔐 **Secure credential handling:** Uses GitHub Secrets
 - 📂 **Multiple resume support:** Support for multiple resume files
 - 🖱️ **Manual trigger:** Instantly update your profile
@@ -20,7 +24,7 @@ restrictions.
 ## Usage 🛠️
 
 ```yaml
-name: Update Naukri Resume
+name: Update Naukri Profile
 
 on:
   schedule:
@@ -28,13 +32,13 @@ on:
   workflow_dispatch: # Manual trigger
 
 jobs:
-  upload-resume:
+  update-profile:
     runs-on: self-hosted # should use self-hosted runner
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Upload resume to Naukri
+      - name: Update Naukri profile
         uses: Prateek-Wayne/naukri-resume-action@v1.0.1
         with:
           username: ${{ secrets.NAUKRI_USERNAME }}
@@ -88,7 +92,7 @@ https://github.com/user-attachments/assets/44f2744e-672d-48b6-b8b7-1de1dfb7217c
 Test locally with [act](https://github.com/nektos/act):
 
 ```bash
-act -j upload-resume -s NAUKRI_USERNAME=your-email -s NAUKRI_PASSWORD=your-password -s NAUKRI_PROFILE_ID=your-profile-id
+act -j update-profile -s NAUKRI_USERNAME=your-email -s NAUKRI_PASSWORD=your-password -s NAUKRI_PROFILE_ID=your-profile-id
 ```
 
 ### Direct Local Testing
