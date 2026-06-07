@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import { login } from './api/login';
 import { uploadResume } from './api/uploadResume';
 import { updateProfileSummary } from './api/updateProfile';
+import { updateResumeHeadline } from './api/updateResumeHeadline';
 
 /**
  * The main function for the action.
@@ -17,6 +18,7 @@ export async function run(): Promise<void> {
     const profileId = core.getInput('profile_id');
     const resumePathInput = core.getInput('resume_path');
     let profileSummary = core.getInput('profile_summary');
+    const resumeHeadline = core.getInput('resume_headline');
 
     // Mask sensitive inputs
     core.setSecret(username);
@@ -106,6 +108,33 @@ export async function run(): Promise<void> {
         } catch (err) {
           core.warning(
             `⚠️ Profile summary update error: ${(err as Error).message}`
+          );
+        }
+      }
+    }
+
+    // Optionally update resume headline if provided
+    if (resumeHeadline) {
+      if (resumeHeadline.trim().length > 250) {
+        core.warning(
+          `⚠️ Resume headline is too long (${resumeHeadline.trim().length} chars). Maximum 250 characters allowed. Skipping headline update.`
+        );
+      } else {
+        core.info('📝 Updating resume headline...');
+        try {
+          const headlineOk = await updateResumeHeadline(
+            cookies,
+            profileId,
+            resumeHeadline.trim()
+          );
+          if (headlineOk) core.info('✅ Resume headline updated');
+          else
+            core.warning(
+              '⚠️ Resume headline update failed (API returned non-2xx)'
+            );
+        } catch (err) {
+          core.warning(
+            `⚠️ Resume headline update error: ${(err as Error).message}`
           );
         }
       }

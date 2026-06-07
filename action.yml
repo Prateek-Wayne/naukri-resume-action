@@ -26,6 +26,11 @@ inputs:
       'Profile summary to update (optional - keeps profile active, minimum 50
       characters)'
     required: false
+  resume_headline:
+    description:
+      'Resume headline to update (optional - shown at the top of your Naukri
+      profile, maximum 250 characters)'
+    required: false
 
 # Define your outputs here.
 outputs:
