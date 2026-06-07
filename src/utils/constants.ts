@@ -17,3 +17,7 @@ export const profileCompleteUrl =
 
 // Alias for backward compatibility
 export const profileFetchUrl = profileCompleteUrl;
+
+// Resume headline update URL
+export const resumeHeadlineUrl =
+  'https://www.naukri.com/cloudgateway-mynaukri/resman-aggregator-services/v1/users/self/fullprofiles';
