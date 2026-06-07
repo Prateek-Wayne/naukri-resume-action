@@ -6,7 +6,7 @@ author: Prateek Wayne
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: refresh-cw
+  icon: upload-cloud
   color: blue
 
 # Define your inputs here.
