@@ -2,6 +2,7 @@ import axios from 'axios';
 import type { AxiosResponse } from 'axios';
 import { loginHeaders } from '../utils/headers';
 import { loginUrl } from '../utils/constants';
+import { generateVid } from '../utils/vid';
 import type { LoginCookies } from '../utils/types';
 
 const extractCookieObject = (cookies: string[] = []): LoginCookies => {
@@ -41,7 +42,7 @@ export const login = async (
       loginUrl,
       { username, password },
       {
-        headers: loginHeaders,
+        headers: loginHeaders(generateVid()),
         maxRedirects: 0,
         validateStatus: (status) => status < 400
       }

@@ -30,6 +30,7 @@ import require$$2$2 from 'child_process';
 import require$$6$1 from 'timers';
 import require$$1$6 from 'tty';
 import http2 from 'http2';
+import crypto from 'node:crypto';
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -49746,29 +49747,28 @@ const {
   create,
 } = axios;
 
-const loginHeaders = {
+// `vid` is a per-request bot-guard token and must be added by the caller (see utils/vid.ts)
+const loginHeaders = (vid) => ({
     accept: 'application/json',
-    'accept-language': 'en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
-    appid: '109',
+    'accept-language': 'en-US,en;q=0.9',
+    appid: '103',
     'cache-control': 'no-cache',
     clientid: 'd3skt0p',
     'content-type': 'application/json',
-    gid: 'LOCATION,INDUSTRY,EDUCATION,FAREA_ROLE',
+    origin: 'https://www.naukri.com',
     pragma: 'no-cache',
     priority: 'u=1, i',
-    nkparam: 'oFYlsMP9SN/18UTJyWR0J4Far8aGlf/RgiTehgjzAfodyCTha++NVMb+jAOJjH4rULRVnn65HS1K0dD3clyVyQ==',
-    'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+    referer: 'https://www.naukri.com/',
+    'sec-ch-ua': '"Not:A-Brand";v="8", "Chromium";v="156", "Google Chrome";v="156"',
     'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
+    'sec-ch-ua-platform': '"macOS"',
     'sec-fetch-dest': 'empty',
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-origin',
-    'x-requested-with': 'XMLHttpRequest',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114.0.5735.198 Safari/537.36',
     systemid: 'jobseeker',
-    Referer: 'https://www.naukri.com/',
-    'Referrer-Policy': 'strict-origin-when-cross-origin'
-};
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36',
+    vid
+});
 const uploadFileHeader = (cookieHeader) => {
     // Create cookie string from the LoginCookies object
     const cookieString = `MYNAUKRI[UNID]=${cookieHeader.unid}; NKWAP=${cookieHeader.nkwap}; nauk_at=${cookieHeader.nauk_at}; nauk_rt=${cookieHeader.nauk_rt}; nauk_sid=${cookieHeader.nauk_sid}`;
@@ -49811,6 +49811,22 @@ const profileFetchUrl = profileCompleteUrl;
 // Resume headline update URL
 const resumeHeadlineUrl = 'https://www.naukri.com/cloudgateway-mynaukri/resman-aggregator-services/v1/users/self/fullprofiles';
 
+// BOTGUARD_PUBLIC_KEY from Naukri's web bundle (base64 DER, RSA-512)
+const BOTGUARD_PUBLIC_KEY = 'MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALbx2oNW1OsL+zv+GK4Ed70m4gr6sBjpzj1PCmLAYs3dQph0IS/DFWXMDN//CyC46DgSJZJZdaxT0xskFBIKNSMCAwEAAQ==';
+const APP_ID = '1352';
+const PAGE_UID = 'login';
+// Mirrors the browser's DynamicTokenSDK: RSA(PKCS1 v1.5) of "v0|<ms>|<appId>_<pageUID>"
+const generateVid = (now = Date.now()) => {
+    const key = crypto.createPublicKey({
+        key: Buffer.from(BOTGUARD_PUBLIC_KEY, 'base64'),
+        format: 'der',
+        type: 'spki'
+    });
+    return crypto
+        .publicEncrypt({ key, padding: crypto.constants.RSA_PKCS1_PADDING }, Buffer.from(`v0|${now}|${APP_ID}_${PAGE_UID}`))
+        .toString('base64');
+};
+
 const extractCookieObject = (cookies = []) => {
     let unid = '';
     let nkwap = '';
@@ -49842,7 +49858,7 @@ const login = async (username, password) => {
     }
     try {
         const response = await axios.post(loginUrl, { username, password }, {
-            headers: loginHeaders,
+            headers: loginHeaders(generateVid()),
             maxRedirects: 0,
             validateStatus: (status) => status < 400
         });
