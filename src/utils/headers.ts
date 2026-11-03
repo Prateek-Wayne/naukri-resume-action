@@ -1,31 +1,29 @@
 import type { LoginCookies } from './types';
 
-export const loginHeaders = {
+// `vid` is a per-request bot-guard token and must be added by the caller (see utils/vid.ts)
+export const loginHeaders = (vid: string) => ({
   accept: 'application/json',
-  'accept-language': 'en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7',
-  appid: '109',
+  'accept-language': 'en-US,en;q=0.9',
+  appid: '103',
   'cache-control': 'no-cache',
   clientid: 'd3skt0p',
   'content-type': 'application/json',
-  gid: 'LOCATION,INDUSTRY,EDUCATION,FAREA_ROLE',
+  origin: 'https://www.naukri.com',
   pragma: 'no-cache',
   priority: 'u=1, i',
-  nkparam:
-    'oFYlsMP9SN/18UTJyWR0J4Far8aGlf/RgiTehgjzAfodyCTha++NVMb+jAOJjH4rULRVnn65HS1K0dD3clyVyQ==',
+  referer: 'https://www.naukri.com/',
   'sec-ch-ua':
-    '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+    '"Not:A-Brand";v="8", "Chromium";v="156", "Google Chrome";v="156"',
   'sec-ch-ua-mobile': '?0',
-  'sec-ch-ua-platform': '"Windows"',
+  'sec-ch-ua-platform': '"macOS"',
   'sec-fetch-dest': 'empty',
   'sec-fetch-mode': 'cors',
   'sec-fetch-site': 'same-origin',
-  'x-requested-with': 'XMLHttpRequest',
-  'user-agent':
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114.0.5735.198 Safari/537.36',
   systemid: 'jobseeker',
-  Referer: 'https://www.naukri.com/',
-  'Referrer-Policy': 'strict-origin-when-cross-origin'
-};
+  'user-agent':
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36',
+  vid
+});
 
 export const uploadFileHeader = (cookieHeader: LoginCookies) => {
   // Create cookie string from the LoginCookies object
