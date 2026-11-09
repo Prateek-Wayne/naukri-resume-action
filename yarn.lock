@@ -2010,9 +2010,9 @@
   integrity sha512-F10mjdnRmGg9K+LGdqQVeUYFr08f3fVBOh7YNE5p1KIpTzhtKKOLqcQEsqZG6yEM2eouXaMo2AZzeDAcseVTrQ==
 
 "@rollup/rollup-linux-x64-gnu@*":
-  version "4.66.0"
-  resolved "https://registry.yarnpkg.com/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.66.0.tgz#168f9030e8f2de9348efc7dc4388792b1dfa7efc"
-  integrity sha512-E46rnZgp7J84Qwe8RMlF+rgimnDo/9fuiGbUArGB0ZkMWf97O7yeSCfKls5x/YJOF0RcuSe9RctuKe1hlxICiA==
+  version "4.67.5"
+  resolved "https://registry.yarnpkg.com/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.67.5.tgz#07b8f2c8c2a9d8b580c7835d49bebc89d193ce18"
+  integrity sha512-HmEfNh5Cdd/NHxgqwMzKnjlvicQQA+D+w+vQXDJSV0x/aHiQSjVwh1Th5RoA7QsMieIaxibt/5iJq68BraTSUg==
 
 "@rollup/rollup-linux-x64-gnu@4.67.2":
   version "4.67.2"
