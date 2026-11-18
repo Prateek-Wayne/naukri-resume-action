@@ -21,6 +21,27 @@ accessible. For example, you can use an AWS EC2 instance in the Mumbai region.
 GitHub-hosted runners (typically in US/EU) may not work due to Naukri API
 restrictions.
 
+## Known Limitations 🚧
+
+### MFA / OTP-protected accounts are not supported
+
+If Naukri asks for multi-factor authentication during login, the action fails
+with an error like:
+
+```text
+403: {"message":"MFA required", ... "flowId":"mfa-login-email","mailSent":true}
+```
+
+Naukri emails a new OTP on every such login. This action runs unattended, so it
+cannot enter that code.
+
+Naukri can ask for an OTP even if you never turned on MFA, when the login comes
+from an unfamiliar location. GitHub-hosted runners (US/EU) commonly trigger
+this.
+
+**Workaround:** run the workflow on a self-hosted runner in India (see the
+Important Note above).
+
 ## Usage 🛠️
 
 ```yaml
